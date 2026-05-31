@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -ex
+
+DEBUG_PROBE_SERIAL=$1
+ELF=${2:-"./build/crypto-benchmark-rp2350.elf"}
+
+OPENOCD_ROOT=$HOME/.pico-sdk/openocd/0.12.0+dev
+OPENOCD=$OPENOCD_ROOT/openocd.exe
+
+if [ ! -z "$DEBUG_PROBE_SERIAL" ]; then
+    DEBUG_PROBE_SERIAL="adapter serial $DEBUG_PROBE_SERIAL"
+fi
+
+$OPENOCD -s $OPENOCD_ROOT/scripts -c "adapter driver cmsis-dap; $DEBUG_PROBE_SERIAL" -f target/rp2350-riscv.cfg -c "adapter speed 5000; program $ELF verify reset exit"

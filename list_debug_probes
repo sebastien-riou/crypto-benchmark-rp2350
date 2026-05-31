@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -ex
+
+lsusb -v -d 2e8a:000c | grep iSerial
