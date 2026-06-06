@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -ex
+
+DEVICE=${1:-/dev/ttyACM0}
+
+cd ../crypto-benchmark
+./get-results $DEVICE ${@:2}

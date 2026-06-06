@@ -151,33 +151,34 @@ int stdio_lbmk_init(void) {
     return 0;
 }
 
+#ifdef __arm__
+const char*hw_platform="rp2350-cortex-m33";
+#else
+const char*hw_platform="rp2350-rv32imc";
+#endif
+
 void LBMK_init_leancom();
 int main(){
     stdio_init_all();
-    /*while(1){
-        #ifdef __arm__
-        printf("hello world ARM\n");
-        #else
-        printf("hello world RISCV\n");
-        #endif
-    }*/
     stdio_lbmk_init();
-    LBMK_init_leancom();
-    printf("crypto-benchmark-rp2350-rv\r\n");
-    enable_cpu_counters();
+    do{
+        LBMK_init_leancom();
+        printf("crypto-benchmark-%s\r\n",hw_platform);
+        enable_cpu_counters();
 
-    const uint32_t sys_clk = clock_get_hz(clk_sys);
-    printf("SYS clock frequency = %lu MHz\r\n",sys_clk/1000000);
-    char frequency_mhz[10] = {0};
-    sprintf(frequency_mhz,"%lu",sys_clk/1000000);
-  
-    const char*hw_info[] = {
-	  "hw_platform", "RP2350-RV",
-	  "frequency_mhz", frequency_mhz
-	};
+        const uint32_t sys_clk = clock_get_hz(clk_sys);
+        printf("SYS clock frequency = %lu MHz\r\n",sys_clk/1000000);
+        char frequency_mhz[10] = {0};
+        sprintf(frequency_mhz,"%lu",sys_clk/1000000);
+    
+        const char*hw_info[] = {
+        "hw_platform", hw_platform,
+        "frequency_mhz", frequency_mhz
+        };
 
-    uint32_t status = save_and_disable_interrupts();
-    lean_benchmark(sizeof(hw_info)/sizeof(char*),hw_info,0);
-    restore_interrupts(status);
-    while (true) {printf("crypto-benchmark-rp2350-rv done\r\n");sleep_ms(1000);}
+        uint32_t status = save_and_disable_interrupts();
+        lean_benchmark(sizeof(hw_info)/sizeof(char*),hw_info,0);
+        restore_interrupts(status);
+        printf("crypto-benchmark-%s done\r\n",hw_platform);
+    }while(1);
 }
