@@ -2,7 +2,16 @@
 Integration of [crypto-benchmark](https://github.com/sebastien-riou/crypto-benchmark) on [Raspberry Pi pico2](https://www.raspberrypi.com/products/raspberry-pi-pico-2/) board.
 
 ## Dependencies
-Picotools. If you followed https://pip-assets.raspberrypi.com/categories/610-raspberry-pi-pico/documents/RP-008276-DS-1-getting-started-with-pico.pdf you are covered.
+
+### Picotools
+If you followed https://pip-assets.raspberrypi.com/categories/610-raspberry-pi-pico/documents/RP-008276-DS-1-getting-started-with-pico.pdf you are covered.
+
+### Other repositories
+Install and build them using the initial setup script:
+````
+./initial-setup
+````
+
 
 ## How to build
 Choose which one to build.
