@@ -3,8 +3,28 @@ Integration of [crypto-benchmark](https://github.com/sebastien-riou/crypto-bench
 
 ## Dependencies
 
+### Cmake and ninja
+````
+sudo apt-get install cmake ninja
+````
+
+
 ### Pico tools & SDK
 If you followed https://pip-assets.raspberrypi.com/categories/610-raspberry-pi-pico/documents/RP-008276-DS-1-getting-started-with-pico.pdf you are covered.
+
+### ARM & RISC-V Toolchains
+The toolchains `arm-none-eabi-gcc` and `riscv-none-elf-gcc` are needed in the `PATH`. 
+This repo use PICO SDK but the `initial-setup` script is cloning other repositories that need them.
+
+This projected as been tested on Ubuntu 24.04 with: 
+- https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/tag/v14.2.1-1.1 
+- https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v15.2.0-1
+
+You can get them using the following script:
+````
+./get_toolchains
+````
+
 
 ### Other repositories
 Install and build them using the initial setup script:
