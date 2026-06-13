@@ -13,8 +13,8 @@ wget https://github.com/raspberrypi/pico-sdk-tools/releases/download/v$PICOTOOLS
 tar -xvzf $PICOTOOLS_TARGZ
 rm $PICOTOOLS_TARGZ
 
-ARM_PATH=`./get_arm_toolchain`
-RV_PATH=`./get_riscv_toolchain`
+ARM_PATH=$(./get_arm_toolchain | tail -n 1)
+RV_PATH=$(./get_riscv_toolchain | tail -n 1)
 
 export PATH=$ARM_PATH:$RV_PATH:$PATH
 

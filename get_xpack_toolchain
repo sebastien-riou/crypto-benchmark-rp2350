@@ -20,16 +20,16 @@ if [ -z "$ON_PATH" ]; then
   if [ ! -d "$BIN" ]; then
     echo "$BIN does not exist, downloading and installing $XPACK_GCC"
 
-      ROOT=`pwd`
-      wget https://github.com/xpack-dev-tools/$XPACK_GCC-xpack/releases/download/v$XPACK_VERSION/$XPACK_TARGZ
+    ROOT=`pwd`
+    wget https://github.com/xpack-dev-tools/$XPACK_GCC-xpack/releases/download/v$XPACK_VERSION/$XPACK_TARGZ
 
-      mkdir -p $XPACK_DST
-      cd $XPACK_DST
+    mkdir -p $XPACK_DST
+    cd $XPACK_DST
 
-      tar xvf $ROOT/$XPACK_TARGZ
-      #chmod -R -w $XPACK_DIR
+    tar xvf $ROOT/$XPACK_TARGZ
+    #chmod -R -w $XPACK_DIR
 
-      rm $ROOT/$XPACK_TARGZ
+    rm $ROOT/$XPACK_TARGZ
   fi
 else
   BIN=$(dirname $ON_PATH)
