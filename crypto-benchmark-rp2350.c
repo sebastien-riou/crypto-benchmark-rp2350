@@ -154,7 +154,7 @@ int stdio_lbmk_init(void) {
 #ifdef __arm__
 const char*hw_platform="rp2350-cortex-m33";
 #else
-const char*hw_platform="rp2350-rv32imc";
+const char*hw_platform="rp2350-rv32imcb";
 #endif
 
 void LBMK_init_leancom();
