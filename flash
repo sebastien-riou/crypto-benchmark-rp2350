@@ -4,7 +4,8 @@ set -ex
 
 ELF=${1:-"./build/crypto-benchmark-rp2350.elf"}
 
-PICOTOOL=$HOME/.pico-sdk/picotool/2.2.0-a4/picotool/picotool
+#PICOTOOL=$HOME/.pico-sdk/picotool/2.2.0-a4/picotool/picotool
+PICOTOOL=picotool/picotool
 
 $PICOTOOL load $ELF -fx
 

@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -e
+
+XPACK_TRIPLE=${1:-arm-none-eabi}
+XPACK_DST_ROOT=${2:-~/.local/xPacks}
+XPACK_VERSION=${3:-14.2.1-1.1}
+
+XPACK_GCC=$XPACK_TRIPLE-gcc
+XPACK_DIR=xpack-$XPACK_GCC-$XPACK_VERSION
+XPACK_TARGZ=$XPACK_DIR-linux-x64.tar.gz
+
+XPACK_DST=$XPACK_DST_ROOT/$XPACK_GCC
+XPACK_BIN=$XPACK_DST/$XPACK_DIR/bin
+
+if [ ! -d "$XPACK_BIN" ]; then
+  echo "$XPACK_BIN does not exist, downloading and installing $XPACK_GCC"
+
+    ROOT=`pwd`
+    wget https://github.com/xpack-dev-tools/$XPACK_GCC-xpack/releases/download/v$XPACK_VERSION/$XPACK_TARGZ
+
+    mkdir -p $XPACK_DST
+    cd $XPACK_DST
+
+    tar xvf $ROOT/$XPACK_TARGZ
+    chmod -R -w $XPACK_DIR
+
+    rm $ROOT/$XPACK_TARGZ
+fi
+echo $XPACK_BIN

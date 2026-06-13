@@ -15,11 +15,17 @@ PRESET=${2:-Release}
 case $CPU in
 
   rv32imc)
-    PICO_PLATFORM=rp2350-riscv
+    export PICO_PLATFORM=rp2350-riscv
+    export PICO_GCC_TRIPLE=riscv-none-elf
+    #gcc=`which riscv-none-elf-gcc`
+    TC_PATH=`./get_riscv_toolchain toolchains`
     ;;
 
   cortex-m33)
-    PICO_PLATFORM=rp2350-arm-s
+    export PICO_PLATFORM=rp2350-arm-s
+    export PICO_GCC_TRIPLE=arm-none-eabi
+    #gcc=`which arm-none-eabi-gcc`
+    TC_PATH=`./get_arm_toolchain toolchains`
     ;;
 
   *)
@@ -30,10 +36,19 @@ case $CPU in
 esac
 
 
-
 ROOT=`pwd`
 
+# Following are specific names expected by pico-sdk, don't change
+export PICO_SDK_PATH=$ROOT/../pico-sdk
+export picotool_DIR=$ROOT/picotool
+export PICOTOOL_FETCH_FROM_GIT_PATH=$ROOT/picotool
+#export PICO_TOOLCHAIN_PATH=$(dirname ${gcc})
+export PICO_TOOLCHAIN_PATH=$(realpath ${TC_PATH})
+
+export PATH=$picotool_DIR:$TC_PATH:$PATH
+
 rm -rf build
-cmake -DCMAKE_BUILD_TYPE:STRING=$PRESET -DPICO_PLATFORM=$PICO_PLATFORM -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE $EXTERNAL_TOOLCHAIN -DPICO_SDK_FETCH_FROM_GIT=ON -DPython3_EXECUTABLE:STRING=/bin/python3 --no-warn-unused-cli -S $ROOT -B $ROOT/build -G Ninja
+# -Dpicotool_DIR=$picotool_DIR
+cmake -DCMAKE_BUILD_TYPE:STRING=$PRESET -DPICO_PLATFORM=$PICO_PLATFORM -DPICO_TOOLCHAIN_PATH=$PICO_TOOLCHAIN_PATH -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=TRUE $EXTERNAL_TOOLCHAIN -DPICO_SDK_PATH=$PICO_SDK_PATH -DPython3_EXECUTABLE:STRING=/bin/python3 --no-warn-unused-cli -S $ROOT -B $ROOT/build
 cmake --build $ROOT/build --config $PRESET --target all $OPT --
 

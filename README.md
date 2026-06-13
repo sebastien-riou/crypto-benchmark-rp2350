@@ -3,11 +3,13 @@ Integration of [crypto-benchmark](https://github.com/sebastien-riou/crypto-bench
 
 ## Dependencies
 
-### Cmake and ninja
+### Cmake
 ````
-sudo apt-get install cmake ninja
+sudo apt-get install cmake
 ````
 
+### Python 3.12
+You have have another version, you can specify it to the `initial-setup` script.
 
 ### Pico tools & SDK
 If you followed https://pip-assets.raspberrypi.com/categories/610-raspberry-pi-pico/documents/RP-008276-DS-1-getting-started-with-pico.pdf you are covered.

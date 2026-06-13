@@ -4,6 +4,19 @@ set -ex
 
 CRYPTO_BENCHMARK_TAG=v0.0.10
 WOLFSSL_TAG=crypto-benchmark-0.0.8
+PICOSDK_TAG=2.2.0
+PICOTOOL_TAG=v2.2.0-3
+
+PICOTOOLS_VERSION=2.2.0-3
+PICOTOOLS_TARGZ=picotool-2.2.0-a4-x86_64-lin.tar.gz
+wget https://github.com/raspberrypi/pico-sdk-tools/releases/download/v$PICOTOOLS_VERSION/$PICOTOOLS_TARGZ
+tar -xvzf $PICOTOOLS_TARGZ
+rm $PICOTOOLS_TARGZ
+
+ARM_PATH=`./get_arm_toolchain toolchains`
+RV_PATH=`./get_riscv_toolchain toolchains`
+
+export PATH=$ARM_PATH:$RV_PATH:$PATH
 
 cd ..
 if [[ ! -z $CRYPTO_BENCHMARK_USE_GIT_SSH ]]; then
@@ -16,6 +29,13 @@ fi
 
 git clone --depth=1 $CRYPTO_BENCHMARK_URL --branch $CRYPTO_BENCHMARK_TAG --single-branch
 git clone --depth=1 $WOLFSSL_URL --branch $WOLFSSL_TAG --single-branch
+git clone --depth=1 https://github.com/raspberrypi/pico-sdk.git --branch $PICOSDK_TAG --single-branch --recurse-submodules
+
+#git clone --depth=1 https://github.com/raspberrypi/pico-sdk-tools --branch $PICOTOOL_TAG --single-branch
+#cd pico-sdk-tools
+#export SKIP_RISCV=1
+#./build_linux.sh
+#cd ..
 
 cd wolfssl
 ./buildit-mldsa-small
@@ -23,7 +43,8 @@ cd ..
 
 cd crypto-benchmark
 ./initial-setup 0
-./build-all-targets
+./buildit on/cortex-m33
+./buildit on/rv32imc
 cd ..
 
 cd crypto-benchmark-rp2350
@@ -32,5 +53,5 @@ cd crypto-benchmark-rp2350
 #try build for RISC-V
 ./buildit rv32imc
 #try to load to flash (RISC-V since it is the last we built)
-./flash
+#./flash
 

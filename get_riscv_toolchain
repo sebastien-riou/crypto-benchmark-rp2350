@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+XPACK_DST_ROOT=${1:-~/.local/xPacks}
+XPACK_VERSION=${2:-15.2.0-1}
+
+./get_xpack_toolchain riscv-none-elf $XPACK_DST_ROOT $XPACK_VERSION
