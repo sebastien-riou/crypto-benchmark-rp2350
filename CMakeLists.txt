@@ -57,7 +57,7 @@ pico_set_linker_script(${TARGET} ${CMAKE_CURRENT_SOURCE_DIR}/linker.ld)
 # add paths for crypto-benchmark lib 
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../crypto-benchmark)
 if(${PICO_PLATFORM} STREQUAL "rp2350-riscv")
-    target_link_libraries(${TARGET} ${CMAKE_CURRENT_SOURCE_DIR}/../crypto-benchmark/build/rv32imc/libcrypto-benchmark.a)
+    target_link_libraries(${TARGET} ${CMAKE_CURRENT_SOURCE_DIR}/../crypto-benchmark/build/rv32imcb/libcrypto-benchmark.a)
 else()
     target_link_libraries(${TARGET} ${CMAKE_CURRENT_SOURCE_DIR}/../crypto-benchmark/build/cortex-m33/libcrypto-benchmark.a)
 endif()

@@ -9,12 +9,12 @@ EXTERNAL_TOOLCHAIN=""
 
 set -ex
 
-CPU=${1:-rv32imc}
+CPU=${1:-rv32imcb}
 PRESET=${2:-Release}
 
 case $CPU in
 
-  rv32imc)
+  rv32imcb)
     export PICO_PLATFORM=rp2350-riscv
     export PICO_GCC_TRIPLE=riscv-none-elf
     #gcc=`which riscv-none-elf-gcc`
@@ -29,7 +29,7 @@ case $CPU in
     ;;
 
   *)
-    echo "ERROR: CPU must be 'rv32imc' or 'cortex-m33'"
+    echo "ERROR: CPU must be 'rv32imcb' or 'cortex-m33'"
     exit -1
     ;;
 

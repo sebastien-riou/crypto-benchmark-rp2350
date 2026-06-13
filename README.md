@@ -36,13 +36,13 @@ Build benchmark lib, for example:
 ````
 cd ../crypto-benchmark
 python link_ext.py --goal=small
-./buildit on/rv32imc mldsa 44
+./buildit on/rv32imcb mldsa 44
 cd ../crypto-benchmark-rp2350 
 ````
 
 Then build the test firmware:
 ````
-./buildit rv32imc
+./buildit rv32imcb
 ````
 
 ### Build for ARM Cortex-M33
