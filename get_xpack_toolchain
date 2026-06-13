@@ -1,9 +1,10 @@
 #!/bin/bash
 
-set -e
-
 XPACK_TRIPLE=${1:-arm-none-eabi}
 ON_PATH=`which $XPACK_TRIPLE-gcc`
+
+set -e
+
 if [ -z "$ON_PATH" ]; then
   #not on path
   XPACK_DST_ROOT=${2:-~/.local/xPacks}
