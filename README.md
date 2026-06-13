@@ -11,9 +11,6 @@ sudo apt-get install cmake
 ### Python 3.12
 You have have another version, you can specify it to the `initial-setup` script.
 
-### Pico tools & SDK
-If you followed https://pip-assets.raspberrypi.com/categories/610-raspberry-pi-pico/documents/RP-008276-DS-1-getting-started-with-pico.pdf you are covered.
-
 ### ARM & RISC-V Toolchains
 The toolchains `arm-none-eabi-gcc` and `riscv-none-elf-gcc` are needed in the `PATH`. 
 This repo use PICO SDK but the `initial-setup` script is cloning other repositories that need them.
@@ -30,7 +27,6 @@ Install and build them using the initial setup script:
 ````
 ./initial-setup
 ````
-
 
 ## How to build
 Choose which one to build.
