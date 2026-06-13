@@ -18,14 +18,14 @@ case $CPU in
     export PICO_PLATFORM=rp2350-riscv
     export PICO_GCC_TRIPLE=riscv-none-elf
     #gcc=`which riscv-none-elf-gcc`
-    TC_PATH=`./get_riscv_toolchain toolchains`
+    TC_PATH=`./get_riscv_toolchain`
     ;;
 
   cortex-m33)
     export PICO_PLATFORM=rp2350-arm-s
     export PICO_GCC_TRIPLE=arm-none-eabi
     #gcc=`which arm-none-eabi-gcc`
-    TC_PATH=`./get_arm_toolchain toolchains`
+    TC_PATH=`./get_arm_toolchain`
     ;;
 
   *)

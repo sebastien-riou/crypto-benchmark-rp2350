@@ -22,10 +22,7 @@ This projected as been tested on Ubuntu 24.04 with:
 - https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/tag/v14.2.1-1.1 
 - https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v15.2.0-1
 
-You can get them using the following script:
-````
-./get_toolchains
-````
+The `initial-setup` and the `buildit` scripts will download them if they are not found on the path (they search for any `arm-none-eabi-gcc` and any `riscv-none-elf-gcc`).
 
 
 ### Other repositories

@@ -13,8 +13,8 @@ wget https://github.com/raspberrypi/pico-sdk-tools/releases/download/v$PICOTOOLS
 tar -xvzf $PICOTOOLS_TARGZ
 rm $PICOTOOLS_TARGZ
 
-ARM_PATH=`./get_arm_toolchain toolchains`
-RV_PATH=`./get_riscv_toolchain toolchains`
+ARM_PATH=`./get_arm_toolchain`
+RV_PATH=`./get_riscv_toolchain`
 
 export PATH=$ARM_PATH:$RV_PATH:$PATH
 
@@ -37,9 +37,10 @@ git clone --depth=1 https://github.com/raspberrypi/pico-sdk.git --branch $PICOSD
 #./build_linux.sh
 #cd ..
 
-cd wolfssl
-./buildit-mldsa-small
-cd ..
+#skip it as it adds additional dependencies such as autoreconf
+#cd wolfssl
+#./buildit-mldsa-small
+#cd ..
 
 cd crypto-benchmark
 ./initial-setup 0
