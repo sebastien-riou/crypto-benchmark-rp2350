@@ -2,7 +2,7 @@
 
 set -ex
 
-CRYPTO_BENCHMARK_TAG=v0.0.10
+CRYPTO_BENCHMARK_TAG=v0.0.11
 WOLFSSL_TAG=crypto-benchmark-0.0.8
 PICOSDK_TAG=2.2.0
 PICOTOOL_TAG=v2.2.0-3
@@ -31,6 +31,7 @@ git clone --depth=1 $CRYPTO_BENCHMARK_URL --branch $CRYPTO_BENCHMARK_TAG --singl
 git clone --depth=1 $WOLFSSL_URL --branch $WOLFSSL_TAG --single-branch
 git clone --depth=1 https://github.com/raspberrypi/pico-sdk.git --branch $PICOSDK_TAG --single-branch --recurse-submodules
 
+#skip it, we get it from a release package
 #git clone --depth=1 https://github.com/raspberrypi/pico-sdk-tools --branch $PICOTOOL_TAG --single-branch
 #cd pico-sdk-tools
 #export SKIP_RISCV=1
