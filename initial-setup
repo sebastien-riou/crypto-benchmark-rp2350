@@ -2,7 +2,7 @@
 
 set -ex
 
-CRYPTO_BENCHMARK_TAG=v0.0.11
+CRYPTO_BENCHMARK_TAG=v0.0.12
 WOLFSSL_TAG=crypto-benchmark-0.0.8
 PICOSDK_TAG=2.2.0
 PICOTOOL_TAG=v2.2.0-3
@@ -46,14 +46,14 @@ git clone --depth=1 https://github.com/raspberrypi/pico-sdk.git --branch $PICOSD
 cd crypto-benchmark
 ./initial-setup 0
 ./buildit on/cortex-m33
-./buildit on/rv32imc
+./buildit on/rv32imcb
 cd ..
 
 cd crypto-benchmark-rp2350
 #try build for Cortex-M33
 ./buildit cortex-m33
 #try build for RISC-V
-./buildit rv32imc
+./buildit rv32imcb
 #try to load to flash (RISC-V since it is the last we built)
 #./flash
 
