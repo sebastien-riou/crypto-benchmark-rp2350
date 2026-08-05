@@ -2,6 +2,7 @@
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
 #include "hardware/structs/clocks.h"
+#include "hardware/xip_cache.h"
 #include "pico/sync.h"
 
 void lean_benchmark(unsigned int ninfo, const char*info[], bool run_forever);
@@ -60,6 +61,13 @@ void __attribute__ ((noinline)) enable_cpu_counters(){
 }
 #endif
 
+void LBMK_clear_caches(){
+    xip_cache_invalidate_all();
+    __dmb();
+    __dsb();
+    __isb();
+}
+
 static volatile uint64_t heap_usage;
 static volatile uint64_t heap_peak_usage;
 void LBMK_init_heap_usage(){
@@ -89,8 +97,9 @@ void *WRAPPER_FUNC(calloc)(size_t count, size_t size) {
 }
 
 void *WRAPPER_FUNC(realloc)(void *mem, size_t size) {
+    heap_usage -= malloc_usable_size(mem);
     void *rc = REAL_FUNC(realloc)(mem, size);
-    if(rc) heap_usage+=malloc_usable_size(rc);
+    if(rc) heap_usage += malloc_usable_size(rc);
     return rc;
 }
 
