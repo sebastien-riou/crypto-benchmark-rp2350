@@ -190,4 +190,11 @@ int main(){
         restore_interrupts(status);
         printf("crypto-benchmark-%s done\r\n",hw_platform);
     }while(1);
+
+    // Do not return from main: that lands in _exit (bkpt in a loop) which
+    // faults with no debugger attached, stopping the USB IRQ that services
+    // TinyUSB. The board would then ignore picotool (./run cannot reset it)
+    // and any serial read from the host would block forever. Parking here
+    // keeps the USB stack alive so the board stays resettable.
+    while(1) tight_loop_contents();
 }
