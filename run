@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Reset the board and exit immediately, leaving it executing the application.
+#
+# "-f" resets a board which is already running the application (not in
+# BOOTSEL mode) through the USB vendor reset interface of pico_stdio_usb.
+# This requires the firmware to still be servicing USB: a firmware which
+# returned from main() sits in _exit (bkpt, escalated to HardFault with no
+# debugger attached) with all interrupts masked, and cannot be reset here.
+#
+# No wait for the USB serial port here on purpose. The RP2350 serves the CDC
+# itself, so the /dev node disappears and comes back on reset; let the host
+# program wait for it (lean_benchmark.py --device-timeout) and then sync on
+# the leancom handshake, which the board blocks in at startup.
+
+set -e
+
+cd "$(dirname "$0")"
+
+PICOTOOL=picotool/picotool
+
+if ! $PICOTOOL reboot -a -f "$@"; then
+    cat >&2 <<'HINT'
+
+picotool could not reset the board. Common causes:
+
+- Running inside a sandbox (e.g. Claude Code): /dev/bus/usb is not exposed
+  there, so picotool can never see the board. Run this in a plain terminal.
+- The firmware is no longer servicing USB (it returned from main, or it
+  crashed): only a power cycle can reset it.
+- Missing USB permissions: install udev rules for vendor 2e8a, or use sudo.
+
+HINT
+    exit 1
+fi
