@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# Print the /dev path of the board's USB serial port: the CDC interface that pico_stdio_usb
+# serves from the RP2350 itself, which is what crypto-benchmark-rp2350.c talks to and what
+# ../crypto-benchmark/get-results wants.
+#
+# Usage: ./find-usb [board_serial]
+#
+# Resolution order:
+#   1. $RP2350_USB, if set          -- explicit override, printed as is
+#   2. the by-id entry whose name contains the board serial given as argument
+#      (or in $PICO_SN)             -- pick one specific board
+#   3. the single Pico SDK CDC present
+#
+# The serial in the by-id name is the RP2350 flash unique ID (pico_get_unique_board_id_string),
+# which is also what picotool filters on, so
+#   ./find-usb <serial>
+# and
+#   picotool reboot -a -f --ser <serial>
+# refer to one physical board.
+#
+# A /dev/serial/by-id path is printed rather than /dev/ttyACMn on purpose: that name embeds the
+# board's USB serial number, so it is stable across reboots and across enumeration order, and it
+# appears and disappears with the board (which is what lean_benchmark.py --device-timeout waits
+# on). Resolve it with "readlink -f" if some tool insists on the short name.
+#
+# Unlike the M5531 and STM32U5 boards, where the VCOM belongs to a separate on-board debug MCU,
+# here the target serves the CDC itself. So the node goes away whenever the firmware is not
+# servicing USB -- across a reset, in BOOTSEL mode, and after the firmware returned from main or
+# crashed. Run this after ./run, not before it.
+#
+# The -if00 suffix is the CDC control interface. -if02 would be the vendor reset interface of
+# pico_stdio_usb (the one ./run reboots through); it is not a tty, so it never shows up here.
+
+set -u
+
+BYID=/dev/serial/by-id
+PATTERN='usb-Raspberry_Pi_Pico_*'
+
+if [ -n "${RP2350_USB:-}" ]; then
+    echo "$RP2350_USB"
+    exit 0
+fi
+
+sn=${1:-${PICO_SN:-}}
+if [ -n "$sn" ]; then
+    PATTERN="usb-Raspberry_Pi_Pico_*${sn}*"
+fi
+
+shopt -s nullglob
+matches=( "$BYID"/$PATTERN )
+shopt -u nullglob
+
+case ${#matches[@]} in
+    1)
+        echo "${matches[0]}"
+        ;;
+    0)
+        echo "find-usb: no Pico SDK CDC matching '$PATTERN' under $BYID" >&2
+        echo "find-usb: is the board plugged in, and is the firmware servicing USB (not in" >&2
+        echo "find-usb: BOOTSEL mode, not returned from main)? serial devices present:" >&2
+        listing=$(ls -1 "$BYID" 2>/dev/null)
+        if [ -n "$listing" ]; then
+            printf '%s\n' "$listing" | sed 's/^/  /' >&2
+        else
+            echo "  (none)" >&2
+        fi
+        exit 1
+        ;;
+    *)
+        echo "find-usb: several boards match; pass the board serial (or set PICO_SN," >&2
+        echo "find-usb: or RP2350_USB) to pick one:" >&2
+        printf '  %s\n' "${matches[@]}" >&2
+        exit 1
+        ;;
+esac

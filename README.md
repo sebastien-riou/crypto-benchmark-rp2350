@@ -66,5 +66,27 @@ The flash the latest firmware you built
 ````
 
 ## How to run the benchmark
-To launch the benchmark and get results, go to `../crypto-benchmark` and run `./get-results /dev/ttyACM0`. 
+Print the USB serial device to connect to (the CDC interface the RP2350 itself serves):
+
+````
+./find-usb
+````
+
+`./find-usb` resolves a `/dev/serial/by-id` entry, whose name embeds the board's flash unique ID and
+is therefore stable across reboots and enumeration order, so nothing has to hardcode `/dev/ttyACM0`.
+With more than one board attached, pin the one you want by passing that serial number, for example
+`./find-usb E6614C775B532F35` -- it is the same serial `picotool --ser` filters on. `RP2350_USB`
+overrides the result entirely.
+
+The RP2350 serves the CDC itself, so the device node only exists while the firmware is running and
+servicing USB: run `./find-usb` after `./run`, not while the board is in BOOTSEL mode.
+
+To launch the benchmark and get results:
+
+````
+./run
+DEV=$(./find-usb)
+(cd ../crypto-benchmark && ./get-results "$DEV")
+````
+
 Be patient, the benchmark takes about one minute to execute.
