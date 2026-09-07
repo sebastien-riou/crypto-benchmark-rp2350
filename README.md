@@ -8,24 +8,22 @@ Integration of [crypto-benchmark](https://github.com/sebastien-riou/crypto-bench
 sudo apt-get install cmake
 ````
 
-### Python 3.12
-You have have another version, you can specify it to the `initial-setup` script.
-
 ### ARM & RISC-V Toolchains
-The toolchains `arm-none-eabi-gcc` and `riscv-none-elf-gcc` are needed in the `PATH`. 
-This repo use PICO SDK but the `initial-setup` script is cloning other repositories that need them.
+The toolchains `arm-none-eabi-gcc` and `riscv-none-elf-gcc` are needed in the `PATH`.
 
 This projected as been tested on Ubuntu 24.04 with: 
 - https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/tag/v14.2.1-1.1 
 - https://github.com/xpack-dev-tools/riscv-none-elf-gcc-xpack/releases/tag/v15.2.0-1
 
-The `initial-setup` and the `buildit` scripts will download them if they are not found on the path (they search for any `arm-none-eabi-gcc` and any `riscv-none-elf-gcc`).
-
+The `buildit` script will download them if they are not found on the path (it searches for any `arm-none-eabi-gcc` and any `riscv-none-elf-gcc`).
 
 ### Other repositories
-Install and build them using the initial setup script:
+This repo is set up as an add-on of [crypto-benchmark](https://github.com/sebastien-riou/crypto-benchmark)'s
+`initial-setup`, which clones+builds it (and `pico-sdk`, via `./setup-pico-sdk`)
+along with `crypto-benchmark`'s own library for its targets:
 ````
-./initial-setup
+cd ../crypto-benchmark
+./initial-setup --level=custom --addons=crypto-benchmark-rp2350
 ````
 
 ## How to build

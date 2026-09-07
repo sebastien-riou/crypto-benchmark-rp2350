@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+PICOSDK_TAG=${1:-2.2.0}
+DEST=../pico-sdk
+
+if [ -d "$DEST" ]; then
+    echo "setup-pico-sdk: $DEST already exists, skipping clone"
+    exit 0
+fi
+
+if [[ ! -z $CRYPTO_BENCHMARK_USE_GIT_SSH ]]; then
+    URL=git@github.com:raspberrypi/pico-sdk.git
+else
+    URL=https://github.com/raspberrypi/pico-sdk.git
+fi
+
+set -x
+git clone --depth=1 "$URL" --branch "$PICOSDK_TAG" --single-branch --recurse-submodules "$DEST"
