@@ -1,0 +1,68 @@
+#!/bin/bash
+# Build picotool with USB support and install it in picotool/, where ./flash and ./run use it and
+# where ./buildit points pico-sdk to (picotool_DIR).
+#
+# Without it, pico-sdk builds its own picotool on the first ./buildit, but without USB support
+# (-DPICOTOOL_NO_LIBUSB=1): that one cannot load nor reboot a board.
+#
+# Usage: ./setup-picotool [TAG]   (default: 2.2.0, must be compatible with ../pico-sdk)
+# Needs ../pico-sdk (./setup-pico-sdk), cmake, a C++ compiler and the libusb-1.0 development files.
+
+set -e
+
+PICOTOOL_TAG=${1:-2.2.0}
+ROOT=$(cd "$(dirname "$0")" && pwd)
+DEST=$ROOT/picotool
+PICOTOOL=$DEST/picotool
+PICO_SDK_PATH=$ROOT/../pico-sdk
+
+# 'help load' exists only in builds with USB support
+if [ -f "$PICOTOOL" ] && "$PICOTOOL" help load > /dev/null 2>&1; then
+    echo "setup-picotool: $PICOTOOL already has USB support, skipping build"
+    exit 0
+fi
+
+if [ ! -d "$PICO_SDK_PATH" ]; then
+    echo "setup-picotool: $PICO_SDK_PATH not found, run ./setup-pico-sdk first"
+    exit 1
+fi
+
+# picotool silently builds without USB support when libusb is missing
+if ! pkg-config --exists libusb-1.0; then
+    echo "setup-picotool: libusb-1.0 development files not found, install them with:"
+    echo "    sudo apt install libusb-1.0-0-dev pkg-config"
+    exit 1
+fi
+
+if [[ ! -z $CRYPTO_BENCHMARK_USE_GIT_SSH ]]; then
+    URL=git@github.com:raspberrypi/picotool.git
+else
+    URL=https://github.com/raspberrypi/picotool.git
+fi
+
+# picotool/ only holds generated files (git ignored), including what pico-sdk left there when it
+# built its own picotool without USB support
+rm -rf "$DEST"
+WORK=$(mktemp -d)
+trap 'rm -rf "$WORK"' EXIT
+
+set -x
+git clone --depth=1 "$URL" --branch "$PICOTOOL_TAG" --single-branch "$WORK/src"
+# flat install: picotool/picotool and picotool/picotoolConfig.cmake
+cmake -S "$WORK/src" -B "$WORK/build" -DCMAKE_BUILD_TYPE=Release -DPICO_SDK_PATH="$PICO_SDK_PATH" \
+    -DPICOTOOL_FLAT_INSTALL=1 -DCMAKE_INSTALL_PREFIX="$ROOT"
+cmake --build "$WORK/build" -j"$(nproc)"
+cmake --install "$WORK/build"
+cp "$WORK/src/udev/60-picotool.rules" "$DEST/"
+set +x
+
+if ! "$PICOTOOL" help load > /dev/null 2>&1; then
+    echo "setup-picotool: $PICOTOOL was built without USB support"
+    exit 1
+fi
+echo "setup-picotool: installed $("$PICOTOOL" version)"
+# 2e8a: Raspberry Pi USB vendor ID, whatever the rules file is named
+if ! grep -q -i 2e8a /etc/udev/rules.d/* /lib/udev/rules.d/* 2> /dev/null; then
+    echo "setup-picotool: to use picotool without sudo, install its udev rules:"
+    echo "    sudo cp $DEST/60-picotool.rules /etc/udev/rules.d/ && sudo udevadm control --reload-rules && sudo udevadm trigger"
+fi
