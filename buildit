@@ -38,6 +38,10 @@ esac
 
 ROOT=`pwd`
 
+# picotool with USB support, for ./flash and ./run: without it in picotool/, pico-sdk builds its own
+# picotool there, but without USB support
+./setup-picotool
+
 # Following are specific names expected by pico-sdk, don't change
 export PICO_SDK_PATH=$ROOT/../pico-sdk
 export picotool_DIR=$ROOT/picotool

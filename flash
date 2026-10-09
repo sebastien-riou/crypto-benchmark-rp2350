@@ -7,5 +7,10 @@ ELF=${1:-"./build/crypto-benchmark-rp2350.elf"}
 #PICOTOOL=$HOME/.pico-sdk/picotool/2.2.0-a4/picotool/picotool
 PICOTOOL=picotool/picotool
 
+if [ ! -f "$PICOTOOL" ]; then
+    echo "flash: no picotool in $PICOTOOL, run ./setup-picotool (./buildit does it)" >&2
+    exit 1
+fi
+
 $PICOTOOL load $ELF -fx
 

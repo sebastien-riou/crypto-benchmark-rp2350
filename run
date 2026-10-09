@@ -19,6 +19,11 @@ cd "$(dirname "$0")"
 
 PICOTOOL=picotool/picotool
 
+if [ ! -f "$PICOTOOL" ]; then
+    echo "run: no picotool in $PICOTOOL, run ./setup-picotool (./buildit does it)" >&2
+    exit 1
+fi
+
 if ! $PICOTOOL reboot -a -f "$@"; then
     cat >&2 <<'HINT'
 

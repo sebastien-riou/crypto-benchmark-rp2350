@@ -27,14 +27,13 @@ cd ../crypto-benchmark
 ````
 
 ### picotool
-`./flash` and `./run` need `picotool` with USB support in `picotool/`. `initial-setup` builds it
-with `./setup-picotool`, which needs the libusb development files:
+`./flash` and `./run` need `picotool` with USB support in `picotool/`. `./buildit` builds it on its
+first run with `./setup-picotool`, which needs the libusb development files:
 ````
 sudo apt install libusb-1.0-0-dev pkg-config
-./setup-picotool
 ````
-Without it, pico-sdk builds its own `picotool` during `./buildit`, but without USB support: `./flash`
-then fails (`picotool/picotool: Is a directory`). Running `./setup-picotool` replaces it.
+Otherwise pico-sdk would build its own `picotool` there, without USB support: it can neither load
+nor reset a board.
 
 ## How to build
 Choose which one to build.
