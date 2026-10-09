@@ -58,6 +58,9 @@ pico_set_linker_script(${TARGET} ${CMAKE_CURRENT_SOURCE_DIR}/linker.ld)
 #include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../crypto-benchmark)
 if(${PICO_PLATFORM} STREQUAL "rp2350-riscv")
     target_link_libraries(${TARGET} ${CMAKE_CURRENT_SOURCE_DIR}/../crypto-benchmark/build/rv32imcb/libcrypto-benchmark.a)
+    # PQRV assembly routines use gp as a scratch register and the IRQ entry does not reload it:
+    # no code may rely on gp-relative addressing
+    target_link_options(${TARGET} PUBLIC "LINKER:--no-relax-gp")
 else()
     target_link_libraries(${TARGET} ${CMAKE_CURRENT_SOURCE_DIR}/../crypto-benchmark/build/cortex-m33/libcrypto-benchmark.a)
 endif()
@@ -66,6 +69,9 @@ target_link_options(${TARGET} PUBLIC "LINKER:--wrap=malloc")
 target_link_options(${TARGET} PUBLIC "LINKER:--wrap=calloc")
 target_link_options(${TARGET} PUBLIC "LINKER:--wrap=realloc")
 target_link_options(${TARGET} PUBLIC "LINKER:--wrap=free")
+
+# libcrypto-benchmark.a is built with LTO objects, optimize them at link time
+target_link_options(${TARGET} PUBLIC -flto)
 
 # Add the standard library to the build
 target_link_libraries(${TARGET}
